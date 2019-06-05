@@ -25,4 +25,4 @@ RUN yum install -y wget \
 VOLUME ["/www/wwwroot","/www/backup","/www/wwwlogs","/sys/fs/cgroup"]
 # EXPOSE 21 80 443 3306 8888 39000-40000
 
-CMD ["/usr/sbin/init"]
+CMD ["/start.sh"]
