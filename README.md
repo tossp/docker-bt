@@ -1,35 +1,29 @@
 # 宝塔Linux面板 For Docker
 
-## 运行
-```
-docker run -p 21:21 \
-           -p 80:80 \
-           -p 443:443 \
-           -p 888:888 \
-           -p 3306:3306 \
-           -p 8888:8888 \
-           -p 39000-40000:39000-40000 \
-           -d --name bt \
-           mingfunwong/bt
-```
+## docker-compose.yml 示例
+```yml
+# 宝塔面板
+# mkdir ./storage/{wwwroot,backup,wwwlogs}
+# 启动指令docker-compose up -d
 
-## 管理后台
-```
-地址：http://localhost:8888/
-账号：admin
-密码：admin123
-```
+version: '3'
 
-## PHP 运行环境
-已为您编译好 Apache 2.4 + PHP 5.6 + MySQL 4.7 + Pure-Ftpd 1.0.47 + phpMyAdmin 4.7。请使用以下命令：
-```
-docker run -p 21:21 \
-           -p 80:80 \
-           -p 443:443 \
-           -p 888:888 \
-           -p 3306:3306 \
-           -p 8888:8888 \
-           -p 39000-39050:39000-39050 \
-           -d --name bt \
-           mingfunwong/bt:lamp5.6
+services:
+ bt:
+  image: tossp/btcn
+  volumes:
+   - ./storage/wwwroot:/www/wwwroot
+   - ./storage/backup:/www/backup
+   - ./storage/wwwlogs:/www/wwwlogs
+   - /sys/fs/cgroup:/sys/fs/cgroup:ro
+  expose:
+   - "21"
+   - "80"
+   - "443"
+   - "3306"
+   - "8888"
+   - "39000-40000"
+  ports:
+   - "8888:8888"
+  restart: always
 ```
