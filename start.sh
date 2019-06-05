@@ -1,6 +1,7 @@
 #!/bin/bash
 if [ -f "/etc/init.d/bt" ];then
     /etc/init.d/bt start
+    /etc/init.d/bt default
 fi
 if [ -f "/etc/init.d/nginx" ];then
     /etc/init.d/nginx start
