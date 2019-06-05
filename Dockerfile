@@ -1,18 +1,28 @@
-FROM centos:7.4.1708
+FROM centos:7
 
-MAINTAINER Mingfun Wong "mingfun.wong.chn@gmail.com"
-
+LABEL authors="Mingfun Wong<mingfun.wong.chn@gmail.com>,TossPig <docker@TossP.com>"\
+      maintainer="TossPig <docker@TossP.com>" \
+      version="6.9.4" \
+      description="宝塔面板"
+ENV container docker
 COPY ./start.sh /start.sh
-
+RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == \
+systemd-tmpfiles-setup.service ] || rm -f $i; done); \
+rm -f /lib/systemd/system/multi-user.target.wants/*;\
+rm -f /etc/systemd/system/*.wants/*;\
+rm -f /lib/systemd/system/local-fs.target.wants/*; \
+rm -f /lib/systemd/system/sockets.target.wants/*udev*; \
+rm -f /lib/systemd/system/sockets.target.wants/*initctl*; \
+rm -f /lib/systemd/system/basic.target.wants/*;\
+rm -f /lib/systemd/system/anaconda.target.wants/*;
 RUN yum install -y wget \
-    && wget -O install.sh http://download.bt.cn/install/install.sh \
+    && wget -O install.sh http://download.bt.cn/install/install_6.0.sh \
     && sed -i 's/read -p "Do you want to install Bt-Panel to the $setup_path directory now?(y\/n): " go;/go="y"/g' install.sh \
-    && sed -i 's/password=`cat \/dev\/urandom | head -n 16 | md5sum | head -c 8`/password="admin123"/g' install.sh \
-    && sh install.sh \
+    && sed -i 's/password=`cat \/dev\/urandom | head -n 16 | md5sum | head -c 8`/password="ts610000"/g' install.sh \
+    && bash install.sh \
     && chmod +x /start.sh
 
-VOLUME /www/wwwroot
+VOLUME ["/www/wwwroot","/www/backup","/www/wwwlogs","/sys/fs/cgroup"]
+# EXPOSE 21 80 443 3306 8888 39000-40000
 
-EXPOSE 21 80 443 3306 8888 39000-40000
-
-CMD ["/start.sh"]
+CMD ["/usr/sbin/init"]
